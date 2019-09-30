@@ -1,0 +1,40 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: SES configs for email rules setup
+Parameters:
+  ConfigSetName:
+    Type: String
+  DomainRuleSetName:
+    Type: String
+  DomainName:
+    Type: String
+
+Resources:
+
+  EmailsS3Bucket:
+    Type: AWS::S3::Bucket
+
+  ConfigSet:
+    Type: AWS::SES::ConfigurationSet
+    Properties:
+      Name: !Ref ConfigSetName
+
+  ReceiptRuleSet:
+    Type: AWS::SES::ReceiptRuleSet
+    Properties:
+      RuleSetName: !Ref DomainRuleSetName
+
+  ReceiptRule1:
+    Type: AWS::SES::ReceiptRule
+    Properties:
+      Rule:
+        Actions:
+          - 
+           S3Action:
+            BucketName: !Ref EmailsS3Bucket
+        Enabled: True
+        Name: "ForwardAll"
+        ScanEnabled: True
+        Recipients:
+          - !Ref DomainName
+      RuleSetName: !Ref DomainRuleSetName
+  
