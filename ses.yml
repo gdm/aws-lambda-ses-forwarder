@@ -13,6 +13,24 @@ Resources:
   EmailsS3Bucket:
     Type: AWS::S3::Bucket
 
+  EmailBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref EmailsS3Bucket
+      PolicyDocument:
+        Statement:
+          -
+            Action:
+              - "s3:PutObject"
+            Effect: "Allow"
+            Resource: !Join ['', ['arn:aws:s3:::', !Ref EmailsS3Bucket, '/*' ]]
+            Principal:
+              Service: [ses.amazonaws.com]
+            Condition:
+              StringEquals:
+                aws:Referer: !Ref 'AWS::AccountId'
+
+
   ConfigSet:
     Type: AWS::SES::ConfigurationSet
     Properties:
@@ -33,8 +51,9 @@ Resources:
             BucketName: !Ref EmailsS3Bucket
         Enabled: True
         Name: "ForwardAll"
-        ScanEnabled: True
+        ScanEnabled: False
         Recipients:
           - !Ref DomainName
+          - !Join [ '@', [ 'test', !Ref DomainName ] ]
       RuleSetName: !Ref DomainRuleSetName
   

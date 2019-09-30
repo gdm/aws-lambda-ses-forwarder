@@ -1,2 +1,5 @@
 /coverage
 /node_modules
+/pyenv
+/prep-env.sh
+/env.sh
