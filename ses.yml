@@ -41,6 +41,63 @@ Resources:
     Properties:
       RuleSetName: !Ref DomainRuleSetName
 
+  EmailsS3BucketCode:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      BucketName: info-contrall-code
+      VersioningConfiguration:
+        Status: Enabled
+
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal: {Service: [lambda.amazonaws.com]}
+          Action: ['sts:AssumeRole']
+      Path: /
+      ManagedPolicyArns:
+      - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+      Policies:
+      - PolicyName: S3Policy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+              Resource: "arn:aws:logs:*:*:*"
+            - Effect: Allow
+              Action:
+                - ses:SendRawEmail
+              Resource: "*"
+            - Effect: Allow
+              Action:
+                - s3:GetObject
+                - s3:PutObject
+              Resource: !Join ['', ['arn:aws:s3:::', !Ref EmailsS3Bucket, '/*' ]]
+
+  lambdaFunc:
+    Type: AWS::Lambda::Function
+    Properties:
+      Handler: index.handler
+      Runtime: nodejs8.10
+      Code:
+        ZipFile: !Sub |
+          var aws = require('aws-sdk');
+          exports.handler = function(event, context) {
+            console.log("Request received:\n", JSON.stringify(event));
+          };
+      MemorySize: 128
+      Timeout: 8
+      Description: Test function
+      Role: !GetAtt LambdaExecutionRole.Arn
+
   ReceiptRule1:
     Type: AWS::SES::ReceiptRule
     Properties:
@@ -48,11 +105,13 @@ Resources:
         Actions:
           - 
            S3Action:
-            BucketName: !Ref EmailsS3Bucket
-        Enabled: True
+             BucketName: !Ref EmailsS3Bucket
+             ObjectKeyPrefix: forwarder
+        Enabled: true
         Name: "ForwardAll"
-        ScanEnabled: False
+        ScanEnabled: false
         Recipients:
           - !Join [ '@', [ 'test123', !Ref DomainName ] ]
+          - !Join [ '@', [ 'test124', !Ref DomainName ] ]
       RuleSetName: !Ref DomainRuleSetName
   
