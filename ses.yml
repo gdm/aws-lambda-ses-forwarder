@@ -98,6 +98,14 @@ Resources:
       Description: Test function
       Role: !GetAtt LambdaExecutionRole.Arn
 
+  LambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt lambdaFunc.Arn
+      Action: 'lambda:InvokeFunction'
+      Principal: "*"
+      SourceAccount: !Ref 'AWS::AccountId'
+
   ReceiptRule1:
     Type: AWS::SES::ReceiptRule
     Properties:
@@ -107,6 +115,10 @@ Resources:
            S3Action:
              BucketName: !Ref EmailsS3Bucket
              ObjectKeyPrefix: forwarder
+          - 
+           LambdaAction:
+             FunctionArn: !GetAtt lambdaFunc.Arn
+             InvocationType: Event
         Enabled: true
         Name: "ForwardAll"
         ScanEnabled: false
