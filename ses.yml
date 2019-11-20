@@ -86,7 +86,10 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       Handler: index.handler
-      Runtime: nodejs8.10
+      Runtime: nodejs12.x
+      Environtment:
+        Variables:
+          AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
       Code:
         ZipFile: !Sub |
           var aws = require('aws-sdk');
