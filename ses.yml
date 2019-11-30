@@ -92,7 +92,7 @@ Resources:
           AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
       Code:
         S3Bucket: info-contrall-code
-        S3Key: lambda-forwarder/v1/function.zip
+        S3Key: lambda-forwarder/v0002/function.zip
       MemorySize: 128
       Timeout: 8
       Description: Test function
