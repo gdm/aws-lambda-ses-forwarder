@@ -87,15 +87,12 @@ Resources:
     Properties:
       Handler: index.handler
       Runtime: nodejs12.x
-      Environtment:
+      Environment:
         Variables:
           AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
       Code:
-        ZipFile: !Sub |
-          var aws = require('aws-sdk');
-          exports.handler = function(event, context) {
-            console.log("Request received:\n", JSON.stringify(event));
-          };
+        S3Bucket: info-contrall-code
+        S3Key: lambda-forwarder/v1/function.zip
       MemorySize: 128
       Timeout: 8
       Description: Test function
