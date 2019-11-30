@@ -127,3 +127,8 @@ Resources:
           - !Join [ '@', [ 'test124', !Ref DomainName ] ]
       RuleSetName: !Ref DomainRuleSetName
   
+Outputs:
+  ForwarderLambdaFunction:
+    Description: Name of lambda forwarder function
+    Value: !Ref lambdaFunc
+

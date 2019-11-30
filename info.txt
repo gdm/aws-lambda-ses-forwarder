@@ -1,3 +1,8 @@
 https://stackoverflow.com/questions/36338890/enable-lambda-function-to-an-s3-bucket-using-cloudformation
 
 Documents about AWS Lambda runtimes: https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
+
+https://docs.aws.amazon.com/lambda/latest/dg/with-s3-example.html
+
+SAM: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-getting-started-hello-world.html
+     https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html
