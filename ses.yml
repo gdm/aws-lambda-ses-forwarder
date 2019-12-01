@@ -92,9 +92,9 @@ Resources:
           AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
       Code:
         S3Bucket: info-contrall-code
-        S3Key: lambda-forwarder/v0002/function.zip
-      MemorySize: 128
-      Timeout: 8
+        S3Key: lambda-forwarder/v0003/function.zip
+      MemorySize: 256
+      Timeout: 16
       Description: Test function
       Role: !GetAtt LambdaExecutionRole.Arn
 
