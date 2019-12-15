@@ -7,11 +7,28 @@ Parameters:
     Type: String
   DomainName:
     Type: String
+  ExpirationInDays:
+    Description: 'Remove emails after days (set to 0 to disable).'
+    Type: Number
+    Default: 0
+    MinValue: 0
+
+Conditions:
+  HasExpirationInDays: !Not [!Equals [!Ref ExpirationInDays, 0]]
 
 Resources:
 
   EmailsS3Bucket:
     Type: AWS::S3::Bucket
+    Properties:
+      LifecycleConfiguration:
+        Rules:
+        - AbortIncompleteMultipartUpload:
+            DaysAfterInitiation: 7
+          Status: Enabled
+        - ExpirationInDays: !If [HasExpirationInDays, !Ref ExpirationInDays, 1]
+          Status: !If [HasExpirationInDays, Enabled, Disabled]
+
 
   EmailBucketPolicy:
     Type: AWS::S3::BucketPolicy
@@ -29,7 +46,6 @@ Resources:
             Condition:
               StringEquals:
                 aws:Referer: !Ref 'AWS::AccountId'
-
 
   ConfigSet:
     Type: AWS::SES::ConfigurationSet
@@ -95,7 +111,7 @@ Resources:
         S3Key: lambda-forwarder/v0003/function.zip
       MemorySize: 256
       Timeout: 16
-      Description: Test function
+      Description: Email forwarder function
       Role: !GetAtt LambdaExecutionRole.Arn
 
   LambdaInvokePermission:
@@ -125,6 +141,7 @@ Resources:
         Recipients:
           - !Join [ '@', [ 'test123', !Ref DomainName ] ]
           - !Join [ '@', [ 'test124', !Ref DomainName ] ]
+          - !Join [ '@', [ 'mm', !Ref DomainName ] ]
       RuleSetName: !Ref DomainRuleSetName
   
 Outputs:

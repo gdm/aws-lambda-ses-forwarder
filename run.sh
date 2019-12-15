@@ -6,4 +6,5 @@
 
 #aws ses set-active-receipt-rule-set --rule-set-name ManagedDomainRuleSetName
 
-aws cloudformation deploy --stack-name SES --template-file ses.yml --capabilities CAPABILITY_IAM
+#aws cloudformation deploy --stack-name SES --template-file ses.yml --capabilities CAPABILITY_IAM --parameters ParameterKey=ExpirationInDays,ParameterValue=100
+aws cloudformation deploy --stack-name SES --template-file ses.yml --capabilities CAPABILITY_IAM 
